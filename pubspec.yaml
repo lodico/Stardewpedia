@@ -33,12 +33,25 @@ flutter:
     - assets/calendars/spring.png
     - assets/calendars/summer.png
     - assets/calendars/winter.png
+    - assets/icons/animal.png
+    - assets/icons/artifact.png
+    - assets/icons/artisan.png
     - assets/icons/calendar_event.gif
+    - assets/icons/cave.png
+    - assets/icons/crops.png
+    - assets/icons/farmhouse.png
+    - assets/icons/fish.png
+    - assets/icons/food.png
+    - assets/icons/foraging.png
+    - assets/icons/fruit.png
+    - assets/icons/greenhouse.png
     - assets/icons/season_all.png
     - assets/icons/season_fall.png
     - assets/icons/season_spring.png
     - assets/icons/season_summer.png
     - assets/icons/season_winter.png
+    - assets/icons/tools.png
+    - assets/icons/weapons.png
     - assets/ui/menu_border.png
 
   # To add assets to your application, add an assets section, like this:

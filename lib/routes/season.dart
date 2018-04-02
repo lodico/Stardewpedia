@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 
+import 'package:stardewpedia/helpers/wiki.dart';
 import 'package:stardewpedia/widgets/calendar.dart';
 import 'package:stardewpedia/widgets/collapsible.dart';
 import 'package:stardewpedia/widgets/informed_widget.dart';
@@ -24,9 +29,121 @@ class SeasonScreen extends StatefulWidget {
 
 class SeasonScreenState extends State<SeasonScreen> {
 
-  SeasonScreenState({ this.season }) : super();
+  SeasonScreenState({ this.season }) : children = [], super() {
+    title = NameOfSeason(season);
+
+    fetch();
+  }
 
   Seasons season;
+
+  String title;
+
+  String pageData = "";
+
+  final List<Collapsible> children;
+
+  void fetch() {
+    WikiHelper.fetchPage(language: "en", pageName: NameOfSeason(season), params: null).then(onPageLoad);
+  }
+
+  void onPageLoad(WikiPage page) {
+    if (page == null) {
+      throw new ArgumentError.notNull("page");
+    }
+
+    WikiPageSection rootSection = page.rootSection;
+    WikiPageSection eventSection = rootSection.childMap['events'];
+    WikiPageSection cropSection = rootSection.childMap['crops'];
+    WikiPageSection forageSection = rootSection.childMap['forage'];
+    WikiPageSection fishSection = rootSection.childMap['fish'];
+
+    setState(() {
+      children.clear();
+
+      title = page.displayTitle;
+
+      if (eventSection != null) {
+        children.add(new Collapsible(
+          color: new Color(0xFF0377A0),
+          collapsedByDefault: false,
+          header: new CollapsibleSectionTitle(
+            iconSource: "assets/icons/calendar_event.gif",
+            title: eventSection.line,
+          ),
+          children: <Widget>[
+            new Container(
+              padding: new EdgeInsets.all(8.0),
+              color: Colors.lightGreen,
+              child: new Calendar(
+                season: widget.season,
+              ),
+            ),
+          ],
+        ));
+      }
+
+      if (cropSection != null) {
+        children.add(new Collapsible(
+          color: new Color(0xFF0377A0),
+          collapsedByDefault: false,
+          header: new CollapsibleSectionTitle(
+            iconSource: "assets/icons/crops.png",
+            title: cropSection.line,
+          ),
+          children: <Widget>[
+            new Container(
+              padding: new EdgeInsets.all(8.0),
+              color: Colors.lightGreen,
+              child: new Calendar(
+                season: widget.season,
+              ),
+            ),
+          ],
+        ));
+      }
+
+      if (forageSection != null) {
+        children.add(new Collapsible(
+          color: new Color(0xFF0377A0),
+          collapsedByDefault: false,
+          header: new CollapsibleSectionTitle(
+            iconSource: "assets/icons/foraging.png",
+            title: forageSection.line,
+          ),
+          children: <Widget>[
+            new Container(
+              padding: new EdgeInsets.all(8.0),
+              color: Colors.lightGreen,
+              child: new Calendar(
+                season: widget.season,
+              ),
+            ),
+          ],
+        ));
+      }
+
+      if (fishSection != null) {
+        children.add(new Collapsible(
+          color: new Color(0xFF0377A0),
+          collapsedByDefault: false,
+          header: new CollapsibleSectionTitle(
+            iconSource: "assets/icons/fish.png",
+            title: fishSection.line,
+          ),
+          children: <Widget>[
+            new Container(
+              padding: new EdgeInsets.all(8.0),
+              color: Colors.lightGreen,
+              child: new Calendar(
+                season: widget.season,
+              ),
+            ),
+          ],
+        ));
+      }
+    });
+  }
 
   void setSeasonBefore() {
     setState(() {
@@ -110,58 +227,7 @@ class SeasonScreenState extends State<SeasonScreen> {
                     title: NameOfSeason(season),
                   ),
                 ),
-                new Collapsible(
-                  color: new Color(0xFF0377A0),
-                  collapsedByDefault: false,
-                  header: new CollapsibleSectionTitle(
-                    iconSource: "assets/icons/calendar_event.gif",
-                    title: "Events",
-                  ),
-                  children: <Widget>[
-                    new Container(
-                      padding: new EdgeInsets.all(8.0),
-                      color: Colors.lightGreen,
-                      child: new Calendar(
-                        season: widget.season,
-                      ),
-                    ),
-                  ],
-                ),
-                new Collapsible(
-                  color: new Color(0xFF0377A0),
-                  collapsedByDefault: false,
-                  header: new CollapsibleSectionTitle(
-                    iconSource: "assets/icons/calendar_event.gif",
-                    title: "Events",
-                  ),
-                  children: <Widget>[
-                    new Container(
-                      padding: new EdgeInsets.all(8.0),
-                      color: Colors.lightGreen,
-                      child: new Calendar(
-                        season: widget.season,
-                      ),
-                    ),
-                  ],
-                ),
-                new Collapsible(
-                  color: new Color(0xFF0377A0),
-                  collapsedByDefault: false,
-                  header: new CollapsibleSectionTitle(
-                    iconSource: "assets/icons/calendar_event.gif",
-                    title: "Events",
-                  ),
-                  children: <Widget>[
-                    new Container(
-                      padding: new EdgeInsets.all(8.0),
-                      color: Colors.lightGreen,
-                      child: new Calendar(
-                        season: widget.season,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              ]..addAll(children)..toList(),
             ),
           ),
         ),
